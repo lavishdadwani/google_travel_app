@@ -1,15 +1,25 @@
-import React, { useState } from 'react'
+import React, { useState ,useEffect, createRef} from 'react'
 import useStyles from "./style"
-import {Grid,CircularProgress,FormControl,Select,MenuItem,Typography,InputLabel, Card} from "@material-ui/core" 
+import {Grid,CircularProgress,FormControl,Select,MenuItem,Typography,InputLabel} from "@material-ui/core" 
 import PlaceDetails from "../placeDetails/PlaceDetails"
-const List = ({places}) => {
+const List = ({places,setType,type,setRating,rating,ChiledClicked,isLoading}) => {
+  const [elRefs, setElRefs] = useState([]);
     const classes = useStyles()
-    const [type, setType] = useState('restaurants')
-    const [ratings, setRatings] = useState('')
+
+    useEffect(() => {
+      setElRefs((refs) => Array(places.length).fill().map((_, i) => refs[i] || createRef()));
+    }, [places]);
+
 
   return (
     <div className={classes.container} >
       <Typography variant='h4'>Food & Dining around you</Typography>
+      {isLoading ? (
+        <div className={classes.loading}>
+          <CircularProgress size="5rem" />
+        </div>
+      ) : (
+        <>
       <FormControl className={classes.formControl}>
         <InputLabel>Type</InputLabel>
         <Select value={type} onChange={(e)=> setType(e.target.value)}>
@@ -20,7 +30,7 @@ const List = ({places}) => {
       </FormControl>
       <FormControl className={classes.formControl}>
         <InputLabel>Rating</InputLabel>
-        <Select value={ratings} onChange={(e)=> setRatings(e.target.value)}>
+        <Select value={rating} onChange={(e)=> setRating(e.target.value)}>
           <MenuItem value="0" >All</MenuItem>
           <MenuItem value="3" >Above 3</MenuItem>
           <MenuItem value="4" >Above 4</MenuItem>
@@ -29,11 +39,13 @@ const List = ({places}) => {
       </FormControl>
       <Grid container spacing={3} className={classes.list}>
         {places?.map((place,i)=>(
-          <Grid xs={12} item key={i}>
-            <PlaceDetails/>
+          <Grid xs={12} ref={elRefs[i]} key={i} item  >
+            <PlaceDetails selected={Number(ChiledClicked) === i} refProp={elRefs[i]} place={place} />
           </Grid>
         ))}
       </Grid>
+      </>
+      )}
     </div>
   )
 }

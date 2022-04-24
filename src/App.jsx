@@ -35,7 +35,7 @@ const App = () => {
 
 
   useEffect(() => {
-    if (bounds.sw && bounds.ne) {
+    if (bounds) {
      
 
       getWeatherData(coords.lat, coords.lng)
@@ -66,7 +66,7 @@ const App = () => {
           tr_latitude: ne.lat,
         },
         headers: {
-          'X-RapidAPI-Key': process.env.RAPID_API_KEY,
+          'X-RapidAPI-Key': process.env.REACT_APP_RAPID_API_KEY,
           'X-RapidAPI-Host': 'travel-advisor.p.rapidapi.com',
         },
       });
@@ -87,7 +87,7 @@ const App = () => {
         const { data } = await axios.get('https://community-open-weather-map.p.rapidapi.com/find', {
           params: { lat, lon: lng },
           headers: {
-            'x-rapidapi-key': process.env.RAPID_API_KEY,
+            'x-rapidapi-key': process.env.REACT_APP_RAPID_API_KEY,
             'x-rapidapi-host': 'community-open-weather-map.p.rapidapi.com',
           },
         });
